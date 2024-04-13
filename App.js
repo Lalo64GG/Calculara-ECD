@@ -4,6 +4,10 @@ import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { ButtonNumericsModal } from "./src/Components/ButtonNumerics";
 import { ExtraButtonNumerics } from "./src/Components/ExtraButtonNumerics";
+import { ModalRaphson } from "./src/Components/ModalRaphson";
+import { ModalSecante } from "./src/Components/ModalSecante";
+import { ModalFalse } from "./src/Components/ModalFalse";
+import { ModalBise } from "./src/Components/ModalBiseccion";
 
 export default function DifferentialEquationCalculator() {
   const [ecuacion, setEquation] = useState("");
@@ -12,6 +16,9 @@ export default function DifferentialEquationCalculator() {
   const [selectedValue, setSelectedValue] = useState();
   const [variables, setVariables] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [ modalSeccante, setModalSecante] = useState(false)
+  const [modalFalse, setModalFalse] = useState(false)
+  const [modalBise, setModalBise] = useState(false)
 
   const handleCalculate = async () => {
     try {
@@ -63,26 +70,23 @@ export default function DifferentialEquationCalculator() {
         default:
           throw new Error("Método no válido");
       }
-      console.log(response.data);
       // Verificar si la respuesta es exitosa y si contiene los datos esperados
     if (response ) {
       if (method === 'Newton-Raphson') {
-        // Formatear la respuesta para el método de Newton-Raphson
-        const formattedResult = response.data[1][0]; // Suponiendo que solo se espera un resultado
-        setSolution(formattedResult);
-        setModalVisible(true)
+        setSolution(response.data)
+        setModalVisible(true); 
       } else if (method === 'Secante') {
         // Formatear la respuesta para el método de Secante
-        const formattedResult = response.data.result; // Suponiendo que el resultado está en la propiedad "result"
-        setSolution(formattedResult);
-        setModalVisible(true)
+        setSolution(response.data);
+        setModalSecante(true)
+
       } else if(method === 'Biseccion') {
-        // Para otros métodos, solo establecer la respuesta sin procesar
-        setSolution(response.data.raiz);
-        setModalVisible(true)
+        setSolution(response.data);
+        setModalBise(true)
+
       } else if(method === 'Falsa Posición') {
-        setSolution(response.data.raiz);
-        setModalVisible(true)
+        setSolution(response.data);
+        setModalFalse(true)
       }
     } else {
       throw new Error('Respuesta no válida');
@@ -132,30 +136,10 @@ export default function DifferentialEquationCalculator() {
         />
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {/* Contenido del modal */}
-            <Text>El resultado es:  {solution}</Text>
-            {/* Botón para cerrar el modal */}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ModalRaphson setModalVisible={ setModalVisible } modalVisible = { modalVisible } solution = { solution } />
+      <ModalSecante setModalVisible={ setModalSecante } modalVisible = { modalSeccante } solution = { solution } />
+      <ModalFalse setModalVisible={ setModalFalse } modalVisible = { modalFalse } solution = { solution } />
+      <ModalBise setModalVisible={ setModalBise } modalVisible = { modalBise } solution = { solution } />
     </View>
   );
 }

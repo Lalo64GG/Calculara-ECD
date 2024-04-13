@@ -4,7 +4,7 @@ Esta es una aplicación móvil desarrollada con React Native que te permite reso
 
 ## Clonar el Repositorio
 
-Para empezar con RG/SF, sigue estos pasos:
+Para empezar con la Calculadora, sigue estos pasos:
 
 1. **Clona el repositorio:**
    ```bash
